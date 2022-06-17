@@ -11,14 +11,28 @@ const LOG_EVENT_MONSTER_ATTACK = 'MONSTER_ATTACK';
 const LOG_EVENT_PLAYER_HEAL = 'PLAYER_HEAL';
 const LOG_EVENT_GAME_OVER = 'GAME_OVER';
 
-const enteredvalue = prompt("enter the initial life of player and monster", '100');
-
-let chosenMaxLife = parseInt(enteredvalue); // maxlife for both monster and player later taken by user
-
-
-if(isNaN(chosenMaxLife) || chosenMaxLife <= 0)
+function getMaxLifeValues()
 {
+    const enteredvalue = prompt("enter the initial life of player and monster", '100');
+    const parsedValue = parseInt(enteredvalue); // maxlife for both monster and player later taken by user
+
+    if(isNaN(parsedValue) || parsedValue <= 0)
+    {
+        throw {"message" : "wrong input"};
+    }
+
+    return parsedValue;
+}
+
+let chosenMaxLife;
+
+try{
+    chosenMaxLife = getMaxLifeValues();
+}catch(error)
+{
+    console.log(error);
     chosenMaxLife = 100;
+    alert('User have entered wrong health, default value 100 is used !')
 }
 
 let currentMonsterHealth = chosenMaxLife;
@@ -146,7 +160,6 @@ function attackMonster(mode)
     currentMonsterHealth -= damage;
     writeToLog(logEvent,damage, currentMonsterHealth, currentPlayerHealth);
     endRound();
-
 }
 
 function attackHandler()
@@ -172,8 +185,8 @@ function healPlayerHandler()
     increasePlayerHealth(HEAL_VALUE);
     currentPlayerHealth += HEAL_VALUE;
     writeToLog(LOG_EVENT_PLAYER_HEAL,healValue, currentMonsterHealth, currentPlayerHealth);
-    endRound();
-    
+    endRound();   
+
 }
 
 function printLogHandler()
